@@ -79,6 +79,10 @@ void Error_Handler(void);
 #define TXEN_GPIO_Port GPIOB
 #define RELAY2_Pin GPIO_PIN_6
 #define RELAY2_GPIO_Port GPIOC
+#define AM_Pin GPIO_PIN_11
+#define AM_GPIO_Port GPIOA
+#define DR_Pin GPIO_PIN_12
+#define DR_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14

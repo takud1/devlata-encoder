@@ -91,14 +91,14 @@ typedef struct {
 // Channel 0 is 422.4MHz for the 433MHz band, each channel increments the frequency by 100KHz, so channel 10 would be 423.4MHz
 // Channel 0 is 844.8MHz for the 868/915MHz band, each channel increments the frequency by 200KHz, so channel 10 would be 846.8MHz
 // Max channel is 511 (473.5MHz / 947.0MHz)
-#define NRF905_CHANNEL			10
+#define NRF905_CHANNEL			6
 
 // Frequency band
 // 868 and 915 are actually the same thing
 // NRF905_BAND_433
 // NRF905_BAND_868
 // NRF905_BAND_915
-#define NRF905_BAND			NRF905_BAND_433
+#define NRF905_BAND			NRF905_BAND_868
 
 // Output power
 // n means negative, n10 = -10

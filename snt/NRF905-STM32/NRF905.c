@@ -12,6 +12,7 @@
 
 #include <string.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 static const uint8_t NRF905_default_config[] = {
 NRF905_CHANNEL,
@@ -282,14 +283,15 @@ uint8_t NRF905_tx(NRF905_t *dev, uint32_t sendTo, void *data, uint8_t len,
 
 	// Load new payload
 	if (data != NULL) {
-		NRF905_HW_SPI_SELECT(dev->hw);
-		NRF905_hw_spi_transfer(dev->hw, NRF905_CMD_W_TX_PAYLOAD,
-		NULL);
-		for (uint8_t i = 0; i < len; i++) {
-			NRF905_hw_spi_transfer(dev->hw, ((uint8_t*) data)[i],
+			NRF905_HW_SPI_SELECT(dev->hw);
+			NRF905_hw_spi_transfer(dev->hw, NRF905_CMD_W_TX_PAYLOAD,
 			NULL);
-		}
-		NRF905_HW_SPI_DESELECT(dev->hw);
+			for (uint8_t i = 0; i < len; i++) {
+				NRF905_hw_spi_transfer(dev->hw, ((uint8_t*) data)[i],
+				NULL);
+			}
+			NRF905_HW_SPI_DESELECT(dev->hw);
+
 	}
 
 	if (!NRF905_HW_POWERED_UP(dev->hw)) {

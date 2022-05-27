@@ -22,12 +22,13 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-#include "cd4094.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include "cd4094.h"
 
 #include "NRF905.h"
 /* USER CODE END Includes */
@@ -82,8 +83,8 @@ int message_length;
 uint32_t my_address;
 uint32_t receiver_address;
 
-#define ADDRESS_MASTER 0xE7E7E7E7
-#define ADDRESS_SLAVE  0xE7E7E7E7
+#define ADDRESS_MASTER 0xA2B5D154
+#define ADDRESS_SLAVE  0xA2B5D154
 
 /* USER CODE END 0 */
 
@@ -134,10 +135,10 @@ int main(void)
 
   	NRF905_hw.gpio[NRF905_HW_GPIO_CD].pin = CD_Pin;
   	NRF905_hw.gpio[NRF905_HW_GPIO_CD].port = CD_GPIO_Port;
-  	NRF905_hw.gpio[NRF905_HW_GPIO_AM].pin = 0;
-  	NRF905_hw.gpio[NRF905_HW_GPIO_AM].port = NULL;
-  	NRF905_hw.gpio[NRF905_HW_GPIO_DR].pin = 0;
-  	NRF905_hw.gpio[NRF905_HW_GPIO_DR].port = NULL;
+  	NRF905_hw.gpio[NRF905_HW_GPIO_AM].pin = AM_Pin;
+  	NRF905_hw.gpio[NRF905_HW_GPIO_AM].port = AM_GPIO_Port;
+  	NRF905_hw.gpio[NRF905_HW_GPIO_DR].pin = DR_Pin;
+  	NRF905_hw.gpio[NRF905_HW_GPIO_DR].port = DR_GPIO_Port;
 
   	NRF905_hw.gpio[NRF905_HW_GPIO_CS].pin = SPI_CS_Pin;
   	NRF905_hw.gpio[NRF905_HW_GPIO_CS].port = SPI_CS_GPIO_Port;
