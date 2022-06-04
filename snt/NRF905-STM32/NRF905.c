@@ -324,6 +324,75 @@ uint8_t NRF905_tx(NRF905_t *dev, uint32_t sendTo, void *data, uint8_t len,
 	return 1;
 }
 
+uint8_t NRF905_tx_it(NRF905_t *dev, uint32_t sendTo, void* data, uint16_t len,
+		NRF905_nextmode_t nextMode) {
+	if (dev == NULL) {
+			return 0;
+		}
+
+	if (NRF905_airway_busy(dev))
+		return 0;
+
+	NRF905_setAddress(dev, sendTo, NRF905_CMD_W_TX_ADDRESS);
+
+	if (data != NULL) {
+			NRF905_HW_SPI_SELECT(dev->hw);
+			NRF905_hw_spi_transfer(dev->hw, NRF905_CMD_W_TX_PAYLOAD, NULL);
+			NRF905_hw_spi_transmit_it(dev->hw, data, NULL, len);
+		}
+	else{
+		return 2;
+	}
+	return 1;
+}
+
+//void NRF905_spi_transmit(NRF905_t *dev, uint32_t sendTo, void *data, uint8_t len,
+//		NRF905_nextmode_t nextMode, int idx){
+//	NRF905_HW_SPI_SELECT(dev->hw);
+//	NRF905_hw_spi_transmit_it(dev->hw, ((uint8_t*) data)[idx],
+//								NULL);
+//}
+
+void NRF905_spi_deselect(NRF905_t *dev) {
+
+	NRF905_HW_SPI_DESELECT(dev->hw);
+
+}
+
+uint8_t NRF905_tx_down(NRF905_t *dev, uint32_t sendTo, void *data, uint16_t len,
+		NRF905_nextmode_t nextMode) {
+
+	if (!NRF905_HW_POWERED_UP(dev->hw)) {
+			NRF905_HW_STANDBY_ENTER(dev->hw);
+			NRF905_HW_POWER_UP(dev->hw);
+			NRF905_hw_delay_ms(dev->hw, 3);
+		}
+
+	if (NRF905_airway_busy(dev))
+		return 0;
+
+	// Put into transmit mode
+	NRF905_HW_MODE_TX(dev->hw);
+
+	// Pulse standby pin to start transmission
+	NRF905_HW_STANDBY_LEAVE(dev->hw);
+
+	if (nextMode == NRF905_NEXTMODE_RX) {
+		// The datasheets says that the radio can switch straight to RX mode after
+		// a transmission is complete by clearing TX_EN while transmitting, but
+		// if this is done within ~700us the transmission seems to get corrupt.
+		NRF905_hw_delay_us(dev->hw, 700);
+		NRF905_HW_MODE_RX(dev->hw);
+	} else if (nextMode == NRF905_NEXTMODE_STANDBY) {
+		NRF905_hw_delay_us(dev->hw, 14);
+		NRF905_HW_STANDBY_ENTER(dev->hw);
+	}
+	// else NRF905_NEXTMODE_TX
+
+	return 0;
+
+}
+
 int NRF905_rx(NRF905_t *dev) {
 	if (dev == NULL) {
 		return -1;

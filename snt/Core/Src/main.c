@@ -80,6 +80,9 @@ uint8_t nrf905_payload_buffer[NRF905_MAX_PAYLOAD + 1];
 int message;
 int message_length;
 
+volatile bool tx_flag = false;
+volatile int state = 0;
+
 uint32_t my_address;
 uint32_t receiver_address;
 
@@ -188,12 +191,46 @@ int main(void)
 		nrf905_payload_buffer[1] = 0x00;
 		nrf905_payload_buffer[2] = 0xD3;
 		nrf905_payload_buffer[3] = 0x00;
+		nrf905_payload_buffer[4] = 0x00;
+		nrf905_payload_buffer[5] = 0x00;
+		nrf905_payload_buffer[6] = 0x00;
+		nrf905_payload_buffer[7] = 0x00;
+		nrf905_payload_buffer[8] = 0x00;
 
-		int ret = NRF905_tx(&NRF905, my_address, (uint8_t*)nrf905_payload_buffer, 32,
-				NRF905_NEXTMODE_STANDBY);
-		printf("ret = %d\r\n", ret);
-		++c;
+		ret = 0;
+
+//		ret = NRF905_tx(&NRF905, my_address, (uint8_t*)nrf905_payload_buffer, NRF905_MAX_PAYLOAD + 1,
+//									NRF905_NEXTMODE_STANDBY);
+
+		switch(state){
+
+		case 0:
+			state = NRF905_tx_it(&NRF905, my_address, (uint8_t*)nrf905_payload_buffer, NRF905_MAX_PAYLOAD + 1,
+							NRF905_NEXTMODE_STANDBY);
+			break;
+
+		case 1:
+			if(tx_flag == true){
+				state++;
+				tx_flag = false;
+				ret = 1;
+			}
+
+			break;
+
+		case 2:
+			state = NRF905_tx_down(&NRF905, my_address, (uint8_t*)nrf905_payload_buffer, NRF905_MAX_PAYLOAD + 1,
+										NRF905_NEXTMODE_STANDBY);
+//			printf("count = %d\r\n", ++c);
+			HAL_Delay(100);
+			break;
+
+
 		}
+
+//		printf("ret = %d\r\n", ret);
+		}
+
 
 //		printf("Switching to RX (%08lX)\r\n", my_address);
 //		NRF905_rx(&NRF905);
@@ -219,7 +256,6 @@ int main(void)
 //			printf("No response\r\n");
 //		}
 
-		HAL_Delay(100);
 //		uint8_t data[NRF905_MAX_PAYLOAD] = {0x00};
 //		data[0] = 0x00;
 //		data[1] = 0xAA;
@@ -281,6 +317,14 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+int call = 0;
+void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi){
+
+//	printf("%d\n", call++);
+	NRF905_spi_deselect(&NRF905);
+	tx_flag = true;
+
+}
 
 /* USER CODE END 4 */
 
