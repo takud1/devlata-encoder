@@ -83,6 +83,7 @@ void Error_Handler(void);
 #define AM_GPIO_Port GPIOA
 #define DR_Pin GPIO_PIN_12
 #define DR_GPIO_Port GPIOA
+#define DR_EXTI_IRQn EXTI4_15_IRQn
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14

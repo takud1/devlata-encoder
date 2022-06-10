@@ -83,6 +83,9 @@ int message_length;
 volatile bool tx_flag = false;
 volatile int state = 0;
 
+int dr = 0;
+int temp_dr = 0;
+
 uint32_t my_address;
 uint32_t receiver_address;
 
@@ -179,7 +182,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  	int c = 0;
+//  	int c = 0;
 	while (1) {
 
 		if(!HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin)){
@@ -222,14 +225,20 @@ int main(void)
 			state = NRF905_tx_down(&NRF905, my_address, (uint8_t*)nrf905_payload_buffer, NRF905_MAX_PAYLOAD + 1,
 										NRF905_NEXTMODE_STANDBY);
 //			printf("count = %d\r\n", ++c);
-			HAL_Delay(100);
+//			HAL_Delay(100);
 			break;
-
+		default:
+			break;
 
 		}
 
 //		printf("ret = %d\r\n", ret);
 		}
+//		dr = HAL_GPIO_ReadPin(DR_GPIO_Port, DR_Pin);
+//		if(dr != temp_dr){
+//			printf("dr change %d to %d", temp_dr, dr);
+//			temp_dr = dr;
+//		}
 
 
 //		printf("Switching to RX (%08lX)\r\n", my_address);
@@ -326,6 +335,15 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi){
 
 }
 
+void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin){
+
+	if (GPIO_Pin == GPIO_PIN_12){
+
+		state = 0;
+
+	}
+
+}
 /* USER CODE END 4 */
 
 /**
