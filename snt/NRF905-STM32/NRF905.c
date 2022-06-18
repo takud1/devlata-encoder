@@ -324,8 +324,8 @@ uint8_t NRF905_tx(NRF905_t *dev, uint32_t sendTo, void *data, uint8_t len,
 	return 1;
 }
 
-uint8_t NRF905_tx_it(NRF905_t *dev, uint32_t sendTo, void* data, uint16_t len,
-		NRF905_nextmode_t nextMode) {
+// Function to send data using SPI interrupt
+uint8_t NRF905_tx_it(NRF905_t *dev, uint32_t sendTo, void* data, uint16_t len) {
 	if (dev == NULL) {
 			return 0;
 		}
@@ -359,8 +359,7 @@ void NRF905_spi_deselect(NRF905_t *dev) {
 
 }
 
-uint8_t NRF905_tx_down(NRF905_t *dev, uint32_t sendTo, void *data, uint16_t len,
-		NRF905_nextmode_t nextMode) {
+uint8_t NRF905_tx_down(NRF905_t *dev, NRF905_nextmode_t nextMode) {
 
 	if (!NRF905_HW_POWERED_UP(dev->hw)) {
 			NRF905_HW_STANDBY_ENTER(dev->hw);

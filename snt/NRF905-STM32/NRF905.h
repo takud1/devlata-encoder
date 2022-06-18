@@ -224,7 +224,7 @@ typedef enum {
 	NRF905_ADDR_SIZE_4 = 0x04,	///< 4 bytes
 } NRF905_addr_size_t;
 
-#define NRF905_MAX_PAYLOAD		32 ///< Maximum payload size
+#define NRF905_MAX_PAYLOAD		9 ///< Maximum payload size
 #define NRF905_REGISTER_COUNT	10 ///< Configuration register count
 
 #define NRF905_CALC_CHANNEL(f, b)	((((f) / (1 + (b>>1))) - 422400000UL) / 100000UL) ///< Workout channel from frequency & band
@@ -271,8 +271,16 @@ uint8_t NRF905_airway_busy(NRF905_t *dev);
 
 int NRF905_set_listen_address(NRF905_t *dev, uint32_t address);
 
+void NRF905_spi_deselect(NRF905_t *dev);
+
+int NRF905_hw_spi_transmit_it(NRF905_hw_t *hw, void* data_tx, uint8_t *data_rx, uint16_t size);
+
 uint8_t NRF905_tx(NRF905_t *dev, uint32_t sendTo, void *data, uint8_t len,
 		NRF905_nextmode_t nextMode);
+
+uint8_t NRF905_tx_it(NRF905_t *dev, uint32_t sendTo, void* data, uint16_t len);
+
+uint8_t NRF905_tx_down(NRF905_t *dev, NRF905_nextmode_t nextMode);
 
 int NRF905_rx(NRF905_t *dev);
 
